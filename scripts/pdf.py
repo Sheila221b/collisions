@@ -60,7 +60,7 @@ def adjustPDF(contents):
 
   startStartXref = contents.find(b"\nstartxref\n", endXREF) + len(b"\nstartxref\n")
   endStartXref = contents.find(b"\n%%%%EOF", startStartXref)
-  contents = contents[:startStartXref] + "%i" % startXREF + contents[endStartXref:]
+  contents = contents[:startStartXref] + b"%i" % startXREF + contents[endStartXref:]
 
   return contents
 
@@ -129,7 +129,14 @@ KIDS1 = procreate(pages[:getCount(d1)])
 
 KIDS2 = procreate(pages[getCount(d1):])
 
-contents = template % locals()
+variables = {
+    b"COUNT2": COUNT2,  # 确保变量已定义
+    b"KIDS2": KIDS2,
+    b"COUNT1": COUNT1,
+    b"KIDS1": KIDS1,
+}
+
+contents = template % variables
 
 # adjust parents for the first set of pages
 contents += dm[dm.find(b"5 0 obj"):].replace(b"/Parent 2 0 R", b"/Parent 3 0 R", COUNT1)
